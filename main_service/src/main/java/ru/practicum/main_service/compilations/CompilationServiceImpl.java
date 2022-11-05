@@ -6,7 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.main_service.categories.CategoryConverter;
-import ru.practicum.main_service.categories.model.Category;
 import ru.practicum.main_service.compilations.dto.CompilationDto;
 import ru.practicum.main_service.compilations.dto.NewCompilationDto;
 import ru.practicum.main_service.compilations.model.Compilation;
@@ -21,7 +20,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -77,7 +75,7 @@ public class CompilationServiceImpl implements CompilationService {
         Page<Compilation> compilations = compilationRepository.findAll(pageRequest);
         log.info("Find all existing compilations: {}", compilations);
         List<CompilationDto> compilationDtoList = new ArrayList<>();
-        for(Compilation compilation : compilations) {
+        for (Compilation compilation : compilations) {
             Set<EventShortDto> eventShortDtos = new HashSet<>();
             compilationDtoList.add(CompilationConverter.toCompilationDto(compilation, eventShortDtos));
             for (Event event : compilation.getEvents()) {
@@ -87,7 +85,7 @@ public class CompilationServiceImpl implements CompilationService {
                 eventShortDtos.add(eventShortDto);
             }
         }
-        return compilationDtoList ;
+        return compilationDtoList;
     }
 
 

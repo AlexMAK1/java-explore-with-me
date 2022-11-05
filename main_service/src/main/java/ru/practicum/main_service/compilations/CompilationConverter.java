@@ -10,7 +10,7 @@ import java.util.Set;
 
 public class CompilationConverter {
 
-    public static NewCompilationDto toNewCompilationDto (Compilation compilation, int[] events){
+    public static NewCompilationDto toNewCompilationDto(Compilation compilation, int[] events) {
         return new NewCompilationDto(
                 compilation.getTitle(),
                 compilation.getPinned(),
@@ -18,7 +18,7 @@ public class CompilationConverter {
         );
     }
 
-    public static Compilation toCompilation (NewCompilationDto newCompilationDto, Set<Event> events){
+    public static Compilation toCompilation(NewCompilationDto newCompilationDto, Set<Event> events) {
         return new Compilation(
                 newCompilationDto.getTitle(),
                 newCompilationDto.getPinned(),
@@ -26,7 +26,7 @@ public class CompilationConverter {
         );
     }
 
-    public static CompilationDto toCompilationDto (Compilation compilation, Set<EventShortDto> events){
+    public static CompilationDto toCompilationDto(Compilation compilation, Set<EventShortDto> events) {
         return new CompilationDto(
                 compilation.getId(),
                 compilation.getTitle(),

@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.main_service.user.dto.UserDto;
 
 import javax.validation.Valid;
-import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -24,12 +23,12 @@ public class UserController {
 
     @GetMapping
     public List<UserDto> getUsers(@RequestParam(name = "from", defaultValue = "0")
-                                     Integer from, @RequestParam(name = "size",
+                                  Integer from, @RequestParam(name = "size",
             defaultValue = "10") Integer size, @RequestParam(required = false) List<Long> ids) {
         log.info("Get all requests from={}, size={}", from, size);
         int page = from / size;
         final PageRequest pageRequest = PageRequest.of(page, size);
-        if(ids==null || ids.isEmpty()){
+        if (ids == null || ids.isEmpty()) {
             return userService.getUsers(pageRequest);
         }
         return userService.getUsersWithIds(ids, pageRequest);

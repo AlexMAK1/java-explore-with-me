@@ -20,14 +20,14 @@ public class Event {
     @Column(name = "event_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name ="annotation", nullable = false, length = 10000)
+    @Column(name = "annotation", nullable = false, length = 10000)
     private String annotation;
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
     private Long confirmedRequests;
     private String createdOn;
-    @Column(name ="description", nullable = false, length = 1000)
+    @Column(name = "description", nullable = false, length = 1000)
     private String description;
     private LocalDateTime eventDate;
     @ManyToOne

@@ -16,7 +16,7 @@ public interface CompilationService {
 
     void addEventToCompilation(long compId, long eventId);
 
-    void deleteEvent (long compId, long eventId);
+    void deleteEvent(long compId, long eventId);
 
     void unpinCompilation(long compId);
 
