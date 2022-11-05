@@ -2,12 +2,26 @@ package ru.practicum.main_service.user;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import ru.practicum.main_service.user.dto.NewUserRequest;
 import ru.practicum.main_service.user.dto.UserDto;
+import ru.practicum.main_service.user.dto.UserShortDto;
 import ru.practicum.main_service.user.model.User;
 
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserConverter {
+
+    public static NewUserRequest toNewUserRequest(User user) {
+        return new NewUserRequest(
+                user.getName(),
+                user.getEmail());
+    }
+
+    public static UserShortDto toUserShortDto(User user) {
+        return new UserShortDto(
+                user.getId(),
+                user.getName());
+    }
 
     public static UserDto toUserDto(User user) {
         return new UserDto(

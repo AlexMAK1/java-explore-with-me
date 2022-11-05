@@ -1,13 +1,15 @@
 package ru.practicum.main_service.user;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.main_service.exception.NotFoundException;
 import ru.practicum.main_service.exception.ValidationException;
 import ru.practicum.main_service.user.dto.UserDto;
 import ru.practicum.main_service.user.model.User;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,6 +19,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
+    @Autowired
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -25,8 +28,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto create(UserDto userDto) {
         if (!userDto.getEmail().contains("@")) {
-            log.error("Ошибка, валидация не пройдена. Электронная почта должна содержать @: {}", userDto.getEmail());
-            throw new ValidationException("Ошибка, валидация не пройдена. Электронная почта должна содержать @");
+            log.error("Error, validation failed. Email must contain @: {}", userDto.getEmail());
+            throw new ValidationException("Error, validation failed. Email must contain @");
         }
         User user = UserConverter.toUser(userDto);
         log.info("Сохраняем нового пользователя: {}", user);
@@ -36,19 +39,27 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getUser(long id) {
         if (userRepository.findById(id).isEmpty()) {
-            log.error("Ошибка, валидация не пройдена. Пользователя с данным id не существует: {}", id);
-            throw new NotFoundException("Ошибка, валидация не пройдена. Пользователя с данным id " +
-                    "не существует");
+            log.error("Error, validation failed. User with given id does not exist: {}", id);
+            throw new NotFoundException("Error, validation failed. User with given id does not exist");
         } else {
-            log.info("Находим пользователя с id: {} {}", id, userRepository.getReferenceById(id));
+            log.info("Find user with id: {} {}", id, userRepository.getReferenceById(id));
             return UserConverter.toUserDto(userRepository.getReferenceById(id));
         }
     }
 
     @Override
-    public List<UserDto> getUsers() {
-        Collection<User> users = userRepository.findAll();
-        log.info("Находим всех существующих пользователей: {}", users);
+    public List<UserDto> getUsersWithIds(List<Long> ids, PageRequest pageRequest) {
+        List<User> users = userRepository.findAllUsers(ids, pageRequest);
+        log.info("Finding all existing users: {}", users);
+        return users.stream()
+                .map(UserConverter::toUserDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UserDto> getUsers(PageRequest pageRequest) {
+        Page<User> users = userRepository.findAll(pageRequest);
+        log.info("Finding all existing users: {}", users);
         return users.stream()
                 .map(UserConverter::toUserDto)
                 .collect(Collectors.toList());
@@ -65,13 +76,13 @@ public class UserServiceImpl implements UserService {
         if (email != null) {
             user.setEmail(email);
         }
-        log.info("Обновляем данные пользователя: {}", user);
+        log.info("Updating user data: {}", user);
         return UserConverter.toUserDto(userRepository.save(user));
     }
 
     @Override
     public void delete(long id) {
-        log.info("Удаляем пользователя c id: {}", id);
+        log.info("Delete user with id: {}", id);
         userRepository.deleteById(id);
     }
 }
