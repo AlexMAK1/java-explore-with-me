@@ -41,10 +41,9 @@ public class EventServiceImpl implements EventService {
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
 
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    private final String startTime = LocalDateTime.now().minusDays(30).format(formatter);
-    private final String endTime = LocalDateTime.now().plusDays(30).format(formatter);
-    private final Boolean unique = false;
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd' 'HH:mm:ss");
+    private final String startTime = LocalDateTime.now().minusDays(15).format(formatter);
+    private final String endTime = LocalDateTime.now().plusDays(15).format(formatter);
 
     @Autowired
     public EventServiceImpl(StatClient statClient, EventRepository eventRepository, CategoryRepository categoryRepository,
@@ -336,6 +335,7 @@ public class EventServiceImpl implements EventService {
             uris.add(String.valueOf(stringBuilder));
             eventFullDtoMap.put(String.valueOf(stringBuilder), eventFullDto);
         }
+        boolean unique = false;
         List<ViewStats> viewStatsList = getViewStats(startTime, endTime, uris, unique);
         for (ViewStats viewStats : viewStatsList) {
             EventFullDto eventFullDto = eventFullDtoMap.get(viewStats.getUri());

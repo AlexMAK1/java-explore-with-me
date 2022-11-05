@@ -12,23 +12,10 @@ import ru.practicum.main_service.user.dto.UserShortDto;
 import ru.practicum.main_service.user.model.User;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class EventConverter {
-
-    public static NewEventDto toNewEventDto(Event event) {
-        return new NewEventDto(
-                event.getId(),
-                event.getAnnotation(),
-                event.getCategory().getId(),
-                event.getDescription(),
-                event.getEventDate().toString(),
-                event.getLocation(),
-                event.getPaid(),
-                event.getParticipantLimit(),
-                event.getRequestModeration(),
-                event.getTitle());
-    }
 
     public static Event toEvent(NewEventDto newEventDto, Category category, String createdOn, LocalDateTime eventDate, User initiator) {
         return new Event(
@@ -51,6 +38,7 @@ public class EventConverter {
     }
 
     public static EventFullDto toEventFullDto(Event event, CategoryDto categoryDto, UserShortDto userShortDto) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return new EventFullDto(
                 event.getId(),
                 event.getAnnotation(),
@@ -58,7 +46,7 @@ public class EventConverter {
                 event.getConfirmedRequests(),
                 event.getCreatedOn(),
                 event.getDescription(),
-                event.getEventDate().toString(),
+                event.getEventDate().format(formatter),
                 userShortDto,
                 event.getLocation(),
                 event.getPaid(),
