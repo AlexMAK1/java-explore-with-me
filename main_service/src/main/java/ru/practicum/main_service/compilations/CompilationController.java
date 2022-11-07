@@ -1,7 +1,7 @@
 package ru.practicum.main_service.compilations;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.main_service.compilations.dto.CompilationDto;
@@ -12,14 +12,10 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 public class CompilationController {
 
     private final CompilationService compilationService;
-
-    @Autowired
-    public CompilationController(CompilationService compilationService) {
-        this.compilationService = compilationService;
-    }
 
     @PostMapping("/admin/compilations")
     public CompilationDto create(@Valid @RequestBody NewCompilationDto newCompilationDto) {

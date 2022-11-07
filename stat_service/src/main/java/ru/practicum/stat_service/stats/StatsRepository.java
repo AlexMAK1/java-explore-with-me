@@ -7,10 +7,9 @@ import ru.practicum.stat_service.stats.model.Hit;
 import java.time.LocalDateTime;
 
 public interface StatsRepository extends JpaRepository<Hit, Long> {
-    @Query("select COUNT(id) from Hit where timestamp>=?1 AND timestamp<=?2 AND uri LIKE ?3")
-    Long getStatistics(LocalDateTime start, LocalDateTime end, String uri);
+    @Query("select count (h.id) from Hit as h where h.timestamp>=?1 and h.timestamp<=?2 and h.uri like ?3")
+    Long getStatistics(LocalDateTime startTime, LocalDateTime endTime, String uri);
 
-    @Query("select COUNT(id) from Hit WHERE timestamp>=?1 AND timestamp<=?2 AND uri LIKE ?3 ORDER BY ip")
-    Long getUniqueStatistics(LocalDateTime start, LocalDateTime end, String uri);
-
+    @Query("select count (h.uri) from Hit as h where h.timestamp>=?1 and h.timestamp<=?2 and h.uri like ?3 order by h.ip")
+    Long getUniqueStatistics(LocalDateTime startTime, LocalDateTime endTime, String uri);
 }

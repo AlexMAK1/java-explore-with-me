@@ -14,7 +14,6 @@ public class RequestController {
 
     private final RequestService requestService;
 
-
     @GetMapping("/users/{userId}/events/{eventId}/requests")
     public List<ParticipationRequestDto> getRequests(@PathVariable("userId") long userId, @PathVariable("eventId")
     long eventId) {

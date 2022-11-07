@@ -1,7 +1,7 @@
 package ru.practicum.main_service.compilations;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -23,26 +23,16 @@ import java.util.Set;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class CompilationServiceImpl implements CompilationService {
 
     private final CompilationRepository compilationRepository;
 
     private final EventRepository eventRepository;
 
-    @Autowired
-    public CompilationServiceImpl(CompilationRepository compilationRepository, EventRepository eventRepository) {
-        this.compilationRepository = compilationRepository;
-        this.eventRepository = eventRepository;
-    }
-
-
     @Override
     public CompilationDto create(NewCompilationDto newCompilationDto) {
-        Set<Event> events = new HashSet<>();
-        for (long id : newCompilationDto.getEvents()) {
-            Event event = eventRepository.getReferenceById(id);
-            events.add(event);
-        }
+        Set<Event> events = eventRepository.findAllEvents(newCompilationDto.getEvents());
         Compilation compilation = CompilationConverter.toCompilation(newCompilationDto, events);
         log.info("Save new compilation: {}", compilation);
         Set<EventShortDto> eventShortDtos = new HashSet<>();

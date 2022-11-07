@@ -1,7 +1,7 @@
 package ru.practicum.main_service.user;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.main_service.user.dto.UserDto;
@@ -12,14 +12,10 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/admin/users")
+@RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
-
-    @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
 
     @GetMapping
     public List<UserDto> getUsers(@RequestParam(name = "from", defaultValue = "0")

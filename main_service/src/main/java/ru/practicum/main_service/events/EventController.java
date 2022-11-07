@@ -1,7 +1,7 @@
 package ru.practicum.main_service.events;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
@@ -11,19 +11,16 @@ import ru.practicum.main_service.events.dto.NewEventDto;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
+
+import static ru.practicum.main_service.events.EventServiceImpl.formatter;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 public class EventController {
 
     private final EventService eventService;
-
-    @Autowired
-    public EventController(EventService eventService) {
-        this.eventService = eventService;
-    }
 
     @PostMapping("/users/{userId}/events")
     public EventFullDto create(@Valid @RequestBody NewEventDto newEventDto, @PathVariable("userId") long userId) {
@@ -87,7 +84,6 @@ public class EventController {
                                         @RequestParam(name = "size", defaultValue = "10") Integer size,
                                         @RequestParam(name = "sort", required = false) String sort,
                                         HttpServletRequest request) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime rangeStartTime = LocalDateTime.parse(rangeStart, formatter);
         LocalDateTime rangeEndTime = LocalDateTime.parse(rangeEnd, formatter);
         log.info("Get all requests from={}, size={}", from, size);
@@ -98,13 +94,12 @@ public class EventController {
 
     @GetMapping("/admin/events")
     public List<EventFullDto> getAdminEvents(@RequestParam(name = "users", required = false) List<Long> users,
-                                        @RequestParam(name = "states", required = false) List<String> states,
-                                        @RequestParam(name = "categories", required = false) List<Long> categories,
-                                        @RequestParam(name = "rangeStart", required = false) String rangeStart,
-                                        @RequestParam(name = "rangeEnd", required = false) String rangeEnd,
-                                        @RequestParam(name = "from", defaultValue = "0")  int from,
-                                        @RequestParam(name = "size", defaultValue = "10")  int size) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                                             @RequestParam(name = "states", required = false) List<String> states,
+                                             @RequestParam(name = "categories", required = false) List<Long> categories,
+                                             @RequestParam(name = "rangeStart", required = false) String rangeStart,
+                                             @RequestParam(name = "rangeEnd", required = false) String rangeEnd,
+                                             @RequestParam(name = "from", defaultValue = "0") int from,
+                                             @RequestParam(name = "size", defaultValue = "10") int size) {
         LocalDateTime rangeStartTime = LocalDateTime.parse(rangeStart, formatter);
         LocalDateTime rangeEndTime = LocalDateTime.parse(rangeEnd, formatter);
         log.info("Get all requests from={}, size={}", from, size);

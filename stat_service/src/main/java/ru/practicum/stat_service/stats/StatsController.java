@@ -1,7 +1,7 @@
 package ru.practicum.stat_service.stats;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.stat_service.stats.dto.EndpointHit;
 import ru.practicum.stat_service.stats.dto.ViewStats;
@@ -13,14 +13,10 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 public class StatsController {
 
     private final StatsService statsService;
-
-    @Autowired
-    public StatsController(StatsService statsService) {
-        this.statsService = statsService;
-    }
 
     @PostMapping("/hit")
     public void createHit(@Valid @RequestBody EndpointHit endpointHit) {

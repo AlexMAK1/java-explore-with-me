@@ -1,8 +1,8 @@
 package ru.practicum.main_service.events;
 
 import com.querydsl.core.types.Predicate;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,6 +33,7 @@ import static ru.practicum.main_service.events.model.QEvent.event;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
 
     @Lazy
@@ -40,19 +41,10 @@ public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
-
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd' 'HH:mm:ss");
+    public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private final String startTime = LocalDateTime.now().minusDays(15).format(formatter);
     private final String endTime = LocalDateTime.now().plusDays(15).format(formatter);
-
-    @Autowired
-    public EventServiceImpl(StatClient statClient, EventRepository eventRepository, CategoryRepository categoryRepository,
-                            UserRepository userRepository) {
-        this.statClient = statClient;
-        this.eventRepository = eventRepository;
-        this.categoryRepository = categoryRepository;
-        this.userRepository = userRepository;
-    }
+    private final boolean unique = false;
 
     @Override
     public EventFullDto create(NewEventDto newEventDto, Long userId) {
@@ -87,7 +79,13 @@ public class EventServiceImpl implements EventService {
                 LocalDateTime.now().format(formatter)));
         CategoryDto categoryDto = CategoryConverter.toCategoryDto(event.getCategory());
         UserShortDto userShortDto = UserConverter.toUserShortDto(event.getInitiator());
-        return EventConverter.toEventFullDto(event, categoryDto, userShortDto);
+        String uri = "/events/" + event.getId();
+        List<String> uris = new ArrayList<>();
+        uris.add(uri);
+        List<ViewStats> views = getViewStats(startTime, endTime, uris, unique);
+        EventFullDto eventFullDto = EventConverter.toEventFullDto(event, categoryDto, userShortDto);
+        eventFullDto.setViews(views.get(0).getHits());
+        return eventFullDto;
     }
 
     @Override
@@ -335,7 +333,6 @@ public class EventServiceImpl implements EventService {
             uris.add(String.valueOf(stringBuilder));
             eventFullDtoMap.put(String.valueOf(stringBuilder), eventFullDto);
         }
-        boolean unique = false;
         List<ViewStats> viewStatsList = getViewStats(startTime, endTime, uris, unique);
         for (ViewStats viewStats : viewStatsList) {
             EventFullDto eventFullDto = eventFullDtoMap.get(viewStats.getUri());

@@ -10,14 +10,6 @@ import java.util.Set;
 
 public class CompilationConverter {
 
-    public static NewCompilationDto toNewCompilationDto(Compilation compilation, int[] events) {
-        return new NewCompilationDto(
-                compilation.getTitle(),
-                compilation.getPinned(),
-                events
-        );
-    }
-
     public static Compilation toCompilation(NewCompilationDto newCompilationDto, Set<Event> events) {
         return new Compilation(
                 newCompilationDto.getTitle(),

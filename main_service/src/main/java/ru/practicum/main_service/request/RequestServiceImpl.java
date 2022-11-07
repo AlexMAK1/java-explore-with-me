@@ -1,7 +1,7 @@
 package ru.practicum.main_service.request;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.main_service.events.EventRepository;
 import ru.practicum.main_service.events.model.Event;
@@ -17,20 +17,12 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class RequestServiceImpl implements RequestService {
 
     private final RequestRepository requestRepository;
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
-
-    @Autowired
-    public RequestServiceImpl(RequestRepository requestRepository, EventRepository eventRepository,
-                              UserRepository userRepository) {
-        this.requestRepository = requestRepository;
-        this.eventRepository = eventRepository;
-        this.userRepository = userRepository;
-    }
-
 
     @Override
     public ParticipationRequestDto create(long userId, Long eventId) {
@@ -50,8 +42,6 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public List<ParticipationRequestDto> getRequests(long userId, long eventId) {
-        User requestor = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("Error, validation" +
-                " failed. User with given id does not exist"));
         log.error("Error, validation failed. User with given id does not exist: {}", userId);
         Event event = eventRepository.getReferenceById(eventId);
         List<Request> requests = requestRepository.findByEvent(event);
