@@ -26,11 +26,13 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public ParticipationRequestDto create(long userId, Long eventId) {
+        Event event = eventRepository.findById(eventId).orElseThrow(() ->  new NotFoundException("Error, validation " +
+                "failed. Event with given id does not exist"));
+        log.error("Error, validation failed. Event with given id does not exist: {}", userId);
         User requestor = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("Error, validation " +
                 "failed. User with given id does not exist"));
         log.error("Error, validation failed. User with given id does not exist: {}", userId);
         Request request = new Request();
-        Event event = eventRepository.getReferenceById(eventId);
         request.setCreated(LocalDateTime.now().toString());
         request.setEvent(event);
         request.setRequester(requestor);
@@ -42,7 +44,6 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public List<ParticipationRequestDto> getRequests(long userId, long eventId) {
-        log.error("Error, validation failed. User with given id does not exist: {}", userId);
         Event event = eventRepository.getReferenceById(eventId);
         List<Request> requests = requestRepository.findByEvent(event);
         log.info("Finding all requests for event with id: {} {}", eventId, requests);
