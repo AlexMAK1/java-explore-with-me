@@ -22,6 +22,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto create(UserDto userDto) {
+        if (userDto.getName() == null) {
+            log.error("Error, validation failed. ");
+            throw new ValidationException("Error, validation failed");
+        }
         if (!userDto.getEmail().contains("@")) {
             log.error("Error, validation failed. Email must contain @: {}", userDto.getEmail());
             throw new ValidationException("Error, validation failed. Email must contain @");

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.main_service.categories.dto.CategoryDto;
 import ru.practicum.main_service.categories.model.Category;
 import ru.practicum.main_service.exception.NotFoundException;
+import ru.practicum.main_service.exception.ValidationException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,6 +22,10 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDto create(CategoryDto categoryDto) {
+        if (categoryDto.getName() == null) {
+            log.error("Error, validation failed. ");
+            throw new ValidationException("Error, validation failed");
+        }
         Category category = CategoryConverter.toCategory(categoryDto);
         log.info("Save new category: {}", category);
         return CategoryConverter.toCategoryDto(categoryRepository.save(category));
@@ -48,7 +53,14 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDto update(CategoryDto categoryDto) {
-        Category category = categoryRepository.getReferenceById(categoryDto.getId());
+        if (categoryDto.getId() == null) {
+            log.error("Error, validation failed. Category with given id does not exist: {}", categoryDto.getId());
+            throw new ValidationException("Error, validation " +
+                    "failed. Category with given id does not exist");
+        }
+        Category category = categoryRepository.findById(categoryDto.getId()).orElseThrow(() -> new NotFoundException("Error, validation " +
+                "failed. Event with given id does not exist"));
+        log.error("Error, validation failed. Category with given id does not exist: {}", categoryDto.getId());
         String name = categoryDto.getName();
         if (name != null) {
             category.setName(name);
