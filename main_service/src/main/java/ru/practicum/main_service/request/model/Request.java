@@ -3,6 +3,8 @@ package ru.practicum.main_service.request.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import ru.practicum.main_service.events.model.Event;
 import ru.practicum.main_service.request.Status;
 import ru.practicum.main_service.user.model.User;
@@ -21,6 +23,7 @@ public class Request {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "event_id")
     private Event event;
     @Column(name = "created")
@@ -28,6 +31,7 @@ public class Request {
     @Enumerated(EnumType.STRING)
     private Status status;
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "requester_id")
     private User requester;
 }

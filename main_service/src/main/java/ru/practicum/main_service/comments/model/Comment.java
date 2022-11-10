@@ -3,6 +3,10 @@ package ru.practicum.main_service.comments.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+import ru.practicum.main_service.events.model.Event;
+import ru.practicum.main_service.user.model.User;
 
 import javax.persistence.*;
 
@@ -16,8 +20,14 @@ public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long commentId;
+    @Column(name = "content",nullable = false, length = 10000)
     private String content;
-    private Boolean isPositive;
-    private Long creatorId;
-    private Long eventId;
+    @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "creator_id")
+    private User creator;
+    @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "event_id")
+    private Event event;
 }

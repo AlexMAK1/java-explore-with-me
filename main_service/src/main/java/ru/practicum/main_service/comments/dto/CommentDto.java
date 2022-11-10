@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 public class CommentDto {
     private Long commentId;
     private String content;
-    private Boolean isPositive;
     private Long creatorId;
     private Long eventId;
 }

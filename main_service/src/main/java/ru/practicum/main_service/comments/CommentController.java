@@ -16,7 +16,7 @@ public class CommentController {
 
     private final CommentService commentService;
 
-    @PostMapping("/comments")
+    @PostMapping("/users/comments")
     public CommentDto create(@Valid @RequestBody CommentDto commentDto) {
         return commentService.create(commentDto);
     }
@@ -45,18 +45,18 @@ public class CommentController {
         return commentService.getCommentsForEvent(eventId, pageRequest);
     }
 
-    @GetMapping("/comments/{userId}")
+    @GetMapping("/users/comments/{userId}")
     public List<CommentDto> getUserComments(@PathVariable("userId") long userId) {
         return commentService.getUserComments(userId);
     }
 
-    @PutMapping("/comments/{userId}")
-    public CommentDto update(@RequestBody CommentDto commentDto, @PathVariable("userId") long userId) {
+    @PutMapping("/users/comments/{userId}")
+    public CommentDto updateComment(@RequestBody CommentDto commentDto, @PathVariable("userId") long userId) {
         return commentService.update(commentDto, userId);
     }
 
-    @DeleteMapping("/comments/{id}")
-    public void deleteUser(@PathVariable("id") long id, @RequestParam(name = "userId") long userId) {
+    @DeleteMapping("/users/comments/{id}")
+    public void deleteComment(@PathVariable("id") long id, @RequestParam(name = "userId") long userId) {
         commentService.delete(id, userId);
     }
 }

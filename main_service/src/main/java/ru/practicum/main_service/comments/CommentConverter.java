@@ -4,6 +4,8 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import ru.practicum.main_service.comments.dto.CommentDto;
 import ru.practicum.main_service.comments.model.Comment;
+import ru.practicum.main_service.events.model.Event;
+import ru.practicum.main_service.user.model.User;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CommentConverter {
@@ -12,20 +14,17 @@ public class CommentConverter {
         return new CommentDto(
                 comment.getCommentId(),
                 comment.getContent(),
-                comment.getIsPositive(),
-                comment.getCreatorId(),
-                comment.getEventId()
+                comment.getCreator().getId(),
+                comment.getEvent().getId()
         );
     }
 
-    public static Comment toComment(CommentDto commentDto) {
+    public static Comment toComment(CommentDto commentDto, User user, Event event) {
         return new Comment(
                 commentDto.getCommentId(),
                 commentDto.getContent(),
-                commentDto.getIsPositive(),
-                commentDto.getCreatorId(),
-                commentDto.getEventId()
+                user,
+                event
         );
     }
-
 }

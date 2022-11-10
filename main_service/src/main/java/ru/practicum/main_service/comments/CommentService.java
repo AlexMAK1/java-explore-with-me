@@ -13,11 +13,11 @@ public interface CommentService {
 
     List<CommentDto> getComments(PageRequest pageRequest);
 
-    List<CommentDto> getCommentsForEvent(long eventId, PageRequest pageRequest);
+    List<CommentDto> getCommentsForEvent(Long eventId, PageRequest pageRequest);
 
-    List<CommentDto> getUserComments(long userId);
+    List<CommentDto> getUserComments(Long userId);
 
-    CommentDto update(CommentDto commentDto, long userId);
+    CommentDto update(CommentDto commentDto, Long userId);
 
-    void delete(long id, long userId);
+    void delete(long id, Long userId);
 }
