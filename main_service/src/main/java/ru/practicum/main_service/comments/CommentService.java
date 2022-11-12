@@ -20,4 +20,6 @@ public interface CommentService {
     CommentDto update(CommentDto commentDto, Long userId);
 
     void delete(long id, Long userId);
+
+    void deleteAdmin(long id);
 }

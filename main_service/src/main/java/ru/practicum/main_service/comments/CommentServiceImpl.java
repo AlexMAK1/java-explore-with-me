@@ -14,6 +14,7 @@ import ru.practicum.main_service.exception.ValidationException;
 import ru.practicum.main_service.user.UserRepository;
 import ru.practicum.main_service.user.model.User;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,14 +34,12 @@ public class CommentServiceImpl implements CommentService {
         if (commentDto == null) {
             throw new ValidationException("Cannot add empty comment.");
         }
-        if (commentRepository.findById(commentDto.getCommentId()).isPresent()) {
-            throw new ValidationException("Comment with this id already exists.");
-        }
         userValidation(commentDto.getCreatorId());
         eventValidation(commentDto.getEventId());
         User user = userRepository.getReferenceById(commentDto.getCreatorId());
         Event event = eventRepository.getReferenceById(commentDto.getEventId());
-        Comment comment = CommentConverter.toComment(commentDto, user, event);
+        LocalDateTime commentDate = LocalDateTime.now();
+        Comment comment = CommentConverter.toComment(commentDto, user, event, commentDate);
         log.info("Save new comment: {}", comment);
         return CommentConverter.toCommentDto(commentRepository.save(comment));
     }
@@ -49,6 +48,7 @@ public class CommentServiceImpl implements CommentService {
     public CommentDto getComment(long id) {
         Comment comment = commentRepository.findById(id).orElseThrow(() -> new NotFoundException("Error, validation" +
                 " failed. Comment with given id does not exist"));
+        log.info("Finding comment with id: {}", id);
         return CommentConverter.toCommentDto(comment);
     }
 
@@ -93,10 +93,10 @@ public class CommentServiceImpl implements CommentService {
         }
         Comment comment = commentRepository.findById(commentDto.getCommentId()).orElseThrow(() ->
                 new NotFoundException("Comment is not exist"));
-        log.error("Error, validation failed. Comment with id is not exist: {}", commentDto.getCommentId());
         if (!commentDto.getContent().isBlank()) {
-            comment.setContent(comment.getContent());
+            comment.setContent(commentDto.getContent());
         }
+        log.info("Updating comment with id: {}, {}", commentDto.getCommentId(), comment);
         return CommentConverter.toCommentDto(commentRepository.save(comment));
     }
 
@@ -110,6 +110,16 @@ public class CommentServiceImpl implements CommentService {
             log.error("Error, validation failed. Comment does not belong user with id: {}", userId);
             throw new ValidationException("Error, validation failed. Comment does not belong this user");
         }
+        log.info("Deleting comment with id: {}", id);
+        commentRepository.delete(comment);
+    }
+
+    @Override
+    public void deleteAdmin(long id) {
+        Comment comment = commentRepository.findById(id).orElseThrow(() ->
+                new NotFoundException("Comment is not exist"));
+        log.error("Error, validation failed. Comment with id is not exist: {}", id);
+        log.info("Deleting comment with id: {}", id);
         commentRepository.delete(comment);
     }
 

@@ -3,6 +3,7 @@ package ru.practicum.main_service.comments;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.main_service.comments.dto.CommentDto;
 
@@ -14,14 +15,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommentController {
 
-    private final CommentService commentService;
+   private final CommentService commentService;
 
     @PostMapping("/users/comments")
     public CommentDto create(@Valid @RequestBody CommentDto commentDto) {
         return commentService.create(commentDto);
     }
 
-    @GetMapping("/comments/{id}")
+    @GetMapping("/comments/public/{id}")
     public CommentDto getComment(@PathVariable("id") long id) {
         return commentService.getComment(id);
     }
@@ -31,7 +32,7 @@ public class CommentController {
                                         @RequestParam(name = "size", defaultValue = "10") Integer size) {
         log.info("Get all requests from={}, size={}", from, size);
         int page = from / size;
-        final PageRequest pageRequest = PageRequest.of(page, size);
+        final PageRequest pageRequest = PageRequest.of(page, size, Sort.by("commentDate").ascending());
         return commentService.getComments(pageRequest);
     }
 
@@ -41,7 +42,7 @@ public class CommentController {
                                                 @PathVariable("eventId") long eventId) {
         log.info("Get all requests from={}, size={}", from, size);
         int page = from / size;
-        final PageRequest pageRequest = PageRequest.of(page, size);
+        final PageRequest pageRequest = PageRequest.of(page, size, Sort.by("commentDate").ascending());
         return commentService.getCommentsForEvent(eventId, pageRequest);
     }
 
@@ -50,7 +51,7 @@ public class CommentController {
         return commentService.getUserComments(userId);
     }
 
-    @PutMapping("/users/comments/{userId}")
+    @PatchMapping("/users/comments/{userId}")
     public CommentDto updateComment(@RequestBody CommentDto commentDto, @PathVariable("userId") long userId) {
         return commentService.update(commentDto, userId);
     }
@@ -58,5 +59,10 @@ public class CommentController {
     @DeleteMapping("/users/comments/{id}")
     public void deleteComment(@PathVariable("id") long id, @RequestParam(name = "userId") long userId) {
         commentService.delete(id, userId);
+    }
+
+    @DeleteMapping("/users/comments/admin/{id}")
+    public void deleteComment(@PathVariable("id") long id) {
+        commentService.deleteAdmin(id);
     }
 }
