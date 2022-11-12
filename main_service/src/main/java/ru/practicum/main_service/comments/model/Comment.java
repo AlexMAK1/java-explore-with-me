@@ -1,4 +1,4 @@
-package ru.practicum.main_service.request.model;
+package ru.practicum.main_service.comments.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -6,32 +6,31 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import ru.practicum.main_service.events.model.Event;
-import ru.practicum.main_service.request.Status;
 import ru.practicum.main_service.user.model.User;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "requests")
 @Data
-@NoArgsConstructor
+@Entity
+@Table(name = "comments")
 @AllArgsConstructor
-public class Request {
+@NoArgsConstructor
+public class Comment {
 
     @Id
-    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long commentId;
+    @Column(name = "content",nullable = false, length = 10000)
+    private String content;
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "event_id")
+    @JoinColumn(name = "creator_id", nullable = false)
+    private User creator;
+    @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "event_id", nullable = false)
     private Event event;
-    @Column(name = "created")
-    private String created;
-    @Enumerated(EnumType.STRING)
-    private Status status;
-    @ManyToOne
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "requester_id")
-    private User requester;
+    @Column(name = "commentDate", nullable = false)
+    private LocalDateTime commentDate;
 }

@@ -3,6 +3,8 @@ package ru.practicum.main_service.events.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import ru.practicum.main_service.categories.model.Category;
 import ru.practicum.main_service.events.State;
 import ru.practicum.main_service.user.model.User;
@@ -23,6 +25,7 @@ public class Event {
     @Column(name = "annotation", nullable = false, length = 10000)
     private String annotation;
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "category_id")
     private Category category;
     private Long confirmedRequests;
@@ -31,6 +34,7 @@ public class Event {
     private String description;
     private LocalDateTime eventDate;
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "initiator_id")
     private User initiator;
     @ManyToOne(cascade = {CascadeType.ALL})

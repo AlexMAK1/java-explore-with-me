@@ -14,6 +14,7 @@ import ru.practicum.main_service.events.EventRepository;
 import ru.practicum.main_service.events.dto.EventShortDto;
 import ru.practicum.main_service.events.model.Event;
 import ru.practicum.main_service.exception.NotFoundException;
+import ru.practicum.main_service.exception.ValidationException;
 import ru.practicum.main_service.user.UserConverter;
 
 import java.util.ArrayList;
@@ -32,6 +33,10 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     public CompilationDto create(NewCompilationDto newCompilationDto) {
+        if (newCompilationDto.getTitle() == null) {
+            log.error("Error, validation failed. ");
+            throw new ValidationException("Error, validation failed");
+        }
         Set<Event> events = eventRepository.findAllEvents(newCompilationDto.getEvents());
         Compilation compilation = CompilationConverter.toCompilation(newCompilationDto, events);
         log.info("Save new compilation: {}", compilation);

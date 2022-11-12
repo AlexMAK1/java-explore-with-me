@@ -77,13 +77,21 @@ public class EventController {
     public List<EventFullDto> getEvents(@RequestParam(name = "text", required = false) String text,
                                         @RequestParam(name = "categories", required = false) List<Long> categories,
                                         @RequestParam(name = "paid", required = false) Boolean paid,
-                                        @RequestParam(name = "rangeStart") String rangeStart,
-                                        @RequestParam(name = "rangeEnd") String rangeEnd,
+                                        @RequestParam(name = "rangeStart", required = false) String rangeStart,
+                                        @RequestParam(name = "rangeEnd", required = false) String rangeEnd,
                                         @RequestParam(name = "onlyAvailable", defaultValue = "false") Boolean onlyAvailable,
                                         @RequestParam(name = "from", defaultValue = "0") Integer from,
                                         @RequestParam(name = "size", defaultValue = "10") Integer size,
                                         @RequestParam(name = "sort", required = false) String sort,
                                         HttpServletRequest request) {
+        if (rangeEnd == null || rangeStart == null) {
+            LocalDateTime rangeStartTime = LocalDateTime.now().minusDays(1);
+            LocalDateTime rangeEndTime = LocalDateTime.now().plusDays(1);
+            log.info("Get all requests from={}, size={}", from, size);
+            int page = from / size;
+            final PageRequest pageRequest = PageRequest.of(page, size, Sort.by("eventDate").ascending());
+            return eventService.getEvents(text, categories, paid, rangeStartTime, rangeEndTime, onlyAvailable, pageRequest, request);
+        }
         LocalDateTime rangeStartTime = LocalDateTime.parse(rangeStart, formatter);
         LocalDateTime rangeEndTime = LocalDateTime.parse(rangeEnd, formatter);
         log.info("Get all requests from={}, size={}", from, size);
@@ -100,6 +108,14 @@ public class EventController {
                                              @RequestParam(name = "rangeEnd", required = false) String rangeEnd,
                                              @RequestParam(name = "from", defaultValue = "0") int from,
                                              @RequestParam(name = "size", defaultValue = "10") int size) {
+        if (rangeEnd == null || rangeStart == null) {
+            LocalDateTime rangeStartTime = LocalDateTime.now().minusDays(1);
+            LocalDateTime rangeEndTime = LocalDateTime.now().plusDays(1);
+            log.info("Get all requests from={}, size={}", from, size);
+            int page = from / size;
+            final PageRequest pageRequest = PageRequest.of(page, size);
+            return eventService.getAdminEvents(users, states, categories, rangeStartTime, rangeEndTime, pageRequest);
+        }
         LocalDateTime rangeStartTime = LocalDateTime.parse(rangeStart, formatter);
         LocalDateTime rangeEndTime = LocalDateTime.parse(rangeEnd, formatter);
         log.info("Get all requests from={}, size={}", from, size);

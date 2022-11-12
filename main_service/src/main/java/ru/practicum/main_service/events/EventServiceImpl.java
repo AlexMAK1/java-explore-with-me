@@ -48,6 +48,10 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventFullDto create(NewEventDto newEventDto, Long userId) {
+        if (newEventDto.getDescription() == null) {
+            log.error("Error, validation failed. ");
+            throw new ValidationException("Error, validation failed");
+        }
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime eventTime = LocalDateTime.parse(newEventDto.getEventDate(), formatter);
         if (now.isAfter(eventTime)) {

@@ -18,9 +18,9 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public List<UserDto> getUsers(@RequestParam(name = "from", defaultValue = "0")
-                                  Integer from, @RequestParam(name = "size",
-            defaultValue = "10") Integer size, @RequestParam(required = false) List<Long> ids) {
+    public List<UserDto> getUsers(@RequestParam(name = "from", defaultValue = "0") Integer from,
+                                  @RequestParam(name = "size", defaultValue = "10") Integer size,
+                                  @RequestParam(required = false) List<Long> ids) {
         log.info("Get all requests from={}, size={}", from, size);
         int page = from / size;
         final PageRequest pageRequest = PageRequest.of(page, size);
